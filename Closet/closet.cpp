@@ -120,12 +120,16 @@ RESULT closet_pair(DPOINT(&x)[NSIZE], DPOINT(&y)[NSIZE], DPOINT(&z)[NSIZE], unsi
 		DPOINTPAIR pair12 = { x[l + 1], x[r - 1], get_distance(x[l + 1], x[r - 1]) };
 
 		std::set<DPOINTPAIR> pair_set{ pair01, pair02, pair12 };
+		DPOINTPAIR pair[3];
+		unsigned cnt = 0;
+		for (std::set<DPOINTPAIR>::const_iterator it = pair_set.begin(); it != pair_set.end(); ++it, ++cnt)
+			pair[cnt] = *it;
 		RESULT result;
-		result.first = pair_set[0];
-		if (pair_set.size() < 2)
+		result.first = pair[0];
+		if (cnt < 2)
 			result.second = { { UINT_MAX, UINT_MAX, UINT_MAX },{ UINT_MAX, UINT_MAX, UINT_MAX }, ULONG_MAX };
 		else
-			result.second = pair_set[1];
+			result.second = pair[1];
 		return result;
 	}
 	else
@@ -143,10 +147,11 @@ RESULT closet_pair(DPOINT(&x)[NSIZE], DPOINT(&y)[NSIZE], DPOINT(&z)[NSIZE], unsi
 		RESULT l_result = closet_pair(x, z, y, l, m);
 		RESULT r_result = closet_pair(x, z, y, m, r);
 
-		DPOINTPAIR pair[4] = { l_result.first, l_result.second, r_result.first, r_result.second };
-		std::sort(pair, pair + 4, [](const DPOINTPAIR& a, const DPOINTPAIR& b)->bool {
-			return a.dist < b.dist;
-		});
+		std::set<DPOINTPAIR> pair_set{ l_result.first, l_result.second, r_result.first, r_result.second };
+		DPOINTPAIR pair[4];
+		unsigned cnt = 0;
+		for (std::set<DPOINTPAIR>::const_iterator it = pair_set.begin(); it != pair_set.end(); ++it, ++cnt)
+			pair[cnt] = *it;
 		RESULT result = { pair[0], pair[1] };
 
 		memcpy_s(y + l, (r - l) * sizeof(DPOINT), z + l, (r - l) * sizeof(DPOINT));
