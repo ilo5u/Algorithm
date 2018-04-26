@@ -14,10 +14,8 @@ unsigned long long  my_random_generator(unsigned(&a)[NSIZE])
 {
 	for (unsigned i = 0; i != NSIZE; ++i)
 		a[i] = i;
-	std::default_random_engine e;
-	e.seed((unsigned)time(NULL));
-	for (unsigned i = 0; i != NSIZE; ++i)
-		std::swap(a[e() % NSIZE], a[e() % NSIZE]);
+	for (unsigned i = 0; i < NSIZE / 1000; ++i)
+		std::swap(a[(unsigned)rand() % NSIZE], a[(unsigned)rand() % NSIZE]);
 	unsigned b[NSIZE];
 	memcpy_s(b, NSIZE * sizeof(unsigned), a, NSIZE * sizeof(unsigned));
 	return get_DD_of_seq(b, 0, NSIZE);

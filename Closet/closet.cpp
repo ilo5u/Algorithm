@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <Windows.h>
 #include <set>
+#include <assert.h>
 
 static const double EARTH_RADIUS = 6378.137;
 static const double PI = 3.1415926;
@@ -76,9 +77,6 @@ int main(int argc, char* argv[])
 		std::set<DPOINT> point_set;
 		while (fscanf_s(lpRead, "%u\t%lf\t%lf\t%lf\n", &point[cnt].id, &point[cnt].lng, &point[cnt].lat, &dist) != EOF)
 			point_set.insert(point[cnt]), ++cnt;
-		cnt = 0;
-		for (std::set<DPOINT>::const_iterator it = point_set.begin(); it != point_set.end(); ++it, ++cnt)
-			point[cnt] = *it;
 
 		DPOINT point_x[MAXN];
 		memcpy_s(point_x, cnt * sizeof(DPOINT), point, cnt * sizeof(DPOINT));
@@ -168,7 +166,7 @@ RESULT closet_pair(DPOINT(&x)[NSIZE], DPOINT(&y)[NSIZE], DPOINT(&z)[NSIZE], unsi
 				double dist = get_distance(z[i], z[j]);
 				if (dist < result.first.dist)
 					result.second = result.first, result.first = { z[i], z[j], dist };
-				else if (dist < result.second.dist)
+				else if (std::fabs(dist - result.first.dist) >= 1e-12 && dist < result.second.dist)
 					result.second = { z[i], z[j], dist };
 			}
 		return result;

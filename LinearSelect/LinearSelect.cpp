@@ -1,81 +1,106 @@
-#include <iostream>
-#include <ctime>
-#include <random>
-#include "random_genertator.h"
+#include <cstdio>
+#include <algorithm>
+
+// 模式选择
+#define THREEPARTITION	// 一分为三
+
+typedef struct _Station
+{
+	unsigned id;
+	double dist;
+} STATION, *LPSTATION;
 
 template <unsigned NSIZE>
-unsigned linear_select(unsigned(&a)[NSIZE], unsigned l, unsigned r, unsigned k);
+STATION linear_select(STATION(&a)[NSIZE], unsigned l, unsigned r, unsigned k);
 
 template <unsigned NSIZE>
-void bubble_sort(unsigned(&a)[NSIZE], unsigned l, unsigned r);
+void bubble_sort(STATION(&a)[NSIZE], unsigned l, unsigned r);
 
 template<unsigned NSIZE>
-unsigned plain_partiton(unsigned(&a)[NSIZE], unsigned l, unsigned r);
+unsigned plain_partiton(STATION(&a)[NSIZE], unsigned l, unsigned r);
 
-const static unsigned MAXN = 23877;
+const static unsigned MAXN = 1033;
+static unsigned LEVEL_CNT = 0;
 
+typedef FILE *LPFILE;
 int main(int argc, char* argv[])
 {
-	unsigned a[MAXN] = { 0 };
-	unsigned long long dd_of_seq = my_random_generator(a);
-	unsigned long long add_of_seq = dd_of_seq / MAXN;
+	LPFILE lpRead = nullptr;
+	if (!fopen_s(&lpRead, "1033个基站数据.txt", "r"))
+	{
+		char lpszID[10];
+		char lpszLNG[10];
+		char lpszLAT[10];
+		char lpszDIS[10];
+		fscanf_s(lpRead, "%s\t%s\t%s\t%s\n", lpszID, _countof(lpszID), lpszLNG, _countof(lpszLNG), lpszLAT, _countof(lpszLAT), lpszDIS, _countof(lpszDIS));
 
-	std::cout << "DD=" << dd_of_seq << std::endl;
-	std::cout << "ADD=" << add_of_seq << std::endl;
-
-	unsigned k = 0;
-	std::cin >> k;
-	std::cout << "K'th=" << linear_select(a, 0, MAXN, k) << std::endl;
-
+		STATION station_set[MAXN];
+		unsigned cnt = 0;
+		double lng, lat;	// 不使用
+		while (fscanf_s(lpRead, "%u\t%lf\t%lf\t%lf\n", &station_set[cnt].id, &lng, &lat, &station_set[cnt].dist) != EOF)
+			++cnt;
+		unsigned k = 0;
+		printf_s("Please input the kth number you want to find ( 1 ~ %u) : ", cnt);
+		scanf_s("%u", &k);
+		STATION res = linear_select(station_set, 0, cnt, k - 1);
+		printf_s("The station'is is %u and its distance is %lf.\nThe level is %u.\n", res.id, res.dist, LEVEL_CNT);
+	}
 	return 0;
 }
 
 template <unsigned NSIZE>
-unsigned linear_select(unsigned(&a)[NSIZE], unsigned l, unsigned r, unsigned k)
+STATION linear_select(STATION(&a)[NSIZE], unsigned l, unsigned r, unsigned k)
 {
-	if (k < l + 1 || k > r + 1)
-		return -1;
-
+	if (k < l || k >= r)
+		return {UINT_MAX, -1};
+	++LEVEL_CNT;
 	const static unsigned length = 5;
-	if (r - l < 20)
+	if (r - l <= 20)
 	{
 		bubble_sort(a, l, r);
-		return a[k - 1];
+		return a[k];
 	}
 	else
 	{
-		for (unsigned i = 0; i < (r - l + 1) / length; ++i)
+		for (unsigned i = 0; i < (r - l) / length; ++i)
 			bubble_sort(a, l + length * i, l + length * (i + 1)), std::swap(a[l + i], a[l + length * i + length / 2]);
-		unsigned x = linear_select(a, l, l + (r - l + 1) / length, l + (r - l + 1) / length / 2 + 1);
-		std::swap(a[l], a[l + (r - l + 1) / length / 2]);
+		linear_select(a, l, l + (r - l) / length, l + (r - l) / length / 2);
+		std::swap(a[l], a[l + (r - l) / length / 2]);
 		unsigned m = plain_partiton(a, l, r);
-		if (m + 1 == k)
+#ifdef THREEPARTITION
+		if (m == k)
 			return a[m];
-		else if (m + 1 > k)
+		else if (m > k)
 			return linear_select(a, l, m, k);
 		else
 			return linear_select(a, m + 1, r, k);
+#else
+		if (m > k)
+			return linear_select(a, l, m, k);
+		else
+			return linear_select(a, m, r, k);
+#endif // THREEPARTITION
 	}
 }
 
 template<unsigned NSIZE>
-void bubble_sort(unsigned(&a)[NSIZE], unsigned l, unsigned r)
+void bubble_sort(STATION(&a)[NSIZE], unsigned l, unsigned r)
 {
 	for (unsigned i = l; i < r; ++i)
-		for (unsigned j = l; j < l + r - i; ++j)
-			if (a[j] > a[j + 1])
+		for (unsigned j = l; j < l + r - i - 1; ++j)
+			if (a[j].dist > a[j + 1].dist)
 				std::swap(a[j], a[j + 1]);
 }
 
 template<unsigned NSIZE>
-unsigned plain_partiton(unsigned(&a)[NSIZE], unsigned l, unsigned r)
+unsigned plain_partiton(STATION(&a)[NSIZE], unsigned l, unsigned r)
 {
-	unsigned i = l, j = r + 1;
-	unsigned k = a[l];
+	unsigned i = l, j = r;
+	STATION k = a[l];
 	while (true)
 	{
-		while (a[++i] < k && i < r);
-		while (a[--j] > k);
+		while (a[++i].dist < k.dist && i < r - 1);
+		while (a[--j].dist > k.dist);
 		if (i >= j) break;
 		std::swap(a[i], a[j]);
 	}
