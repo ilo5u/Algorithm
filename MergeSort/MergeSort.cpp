@@ -10,12 +10,15 @@
 
 const static unsigned MAXN = 30000;
 
+// 非递归
 template <unsigned NSIZE>
 void nonrecursive_merge_sort(unsigned(&a)[NSIZE], unsigned l, unsigned r);
 
+// 递归
 template <unsigned NSIZE>
 unsigned recursive_merge_sort(unsigned(&a)[NSIZE], unsigned l, unsigned r);
 
+// 合并操作
 template <unsigned NSIZE>
 void plain_merge(unsigned(&a)[NSIZE], unsigned l, unsigned m, unsigned r);
 
