@@ -1,9 +1,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
-#include <Windows.h>
 #include <set>
-#include <assert.h>
 
 static const double EARTH_RADIUS = 6378.137;
 static const double PI = 3.1415926;
@@ -31,6 +29,7 @@ typedef struct _DPOINT
 	}
 } DPOINT, *LPDPOINT;
 
+// 点对信息
 typedef struct _DPOINTPAIR
 {
 	DPOINT a;
@@ -48,6 +47,7 @@ typedef struct _DPOINTPAIR
 	}
 } DPOINTPAIR, *LPDPOINTPAIR;
 
+// 最近及次近点对记录
 typedef struct _RESULT
 {
 	DPOINTPAIR first;
@@ -56,6 +56,7 @@ typedef struct _RESULT
 
 double get_distance(const DPOINT& a, const DPOINT& b);
 
+// 求解最近点对及次近点对
 template <unsigned NSIZE>
 RESULT closet_pair(DPOINT(&x)[NSIZE], DPOINT(&y)[NSIZE], DPOINT(&z)[NSIZE], unsigned l, unsigned r);
 
