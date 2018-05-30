@@ -90,6 +90,13 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <StackCommitSize>268435456</StackCommitSize>
+      <HeapReserveSize>268435456</HeapReserveSize>
+      <HeapCommitSize>268435456</HeapCommitSize>
+      <StackReserveSize>268435456</StackReserveSize>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>

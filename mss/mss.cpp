@@ -34,10 +34,10 @@ int main(int argc, char* argv[])
 	};
 
 	char szFileName[MAX_LOADSTRING];
-	sprintf_s(szFileName, "附件2.最大子段和输入数据2017-序列1.txt", MAX_LOADSTRING);
+	sprintf_s(szFileName, "附件2.最大子段和输入数据2017-序列1.txt");
 	printf_s("test1: sum = %d\n", test(szFileName));
-
-	sprintf_s(szFileName, "附件2.最大子段和输入数据2017-序列2.txt", MAX_LOADSTRING);
+	printf_s("\n");
+	sprintf_s(szFileName, "附件2.最大子段和输入数据2017-序列2.txt");
 	printf_s("test2: sum = %d\n", test(szFileName));
 
 	return 0;
