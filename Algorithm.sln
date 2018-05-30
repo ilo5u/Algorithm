@@ -11,6 +11,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LinearSelect", "LinearSelec
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Closet", "Closet\Closet.vcxproj", "{A9BFC085-7F2F-4423-9400-53531E8CB3A8}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LCS", "LCS\LCS.vcxproj", "{03A5FB1C-4772-45CB-B04C-578754540790}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mss", "mss\mss.vcxproj", "{D24F6452-7ADB-4D85-A1D8-1AD05E55C2B6}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Backpack", "Backpack\Backpack.vcxproj", "{5E77B936-8910-41D5-98F1-4ECBCC97D684}"
 EndProject
 Global
@@ -53,14 +57,6 @@ Global
 		{A9BFC085-7F2F-4423-9400-53531E8CB3A8}.Release|x64.Build.0 = Release|x64
 		{A9BFC085-7F2F-4423-9400-53531E8CB3A8}.Release|x86.ActiveCfg = Release|Win32
 		{A9BFC085-7F2F-4423-9400-53531E8CB3A8}.Release|x86.Build.0 = Release|Win32
-		{5E77B936-8910-41D5-98F1-4ECBCC97D684}.Debug|x64.ActiveCfg = Debug|x64
-		{5E77B936-8910-41D5-98F1-4ECBCC97D684}.Debug|x64.Build.0 = Debug|x64
-		{5E77B936-8910-41D5-98F1-4ECBCC97D684}.Debug|x86.ActiveCfg = Debug|Win32
-		{5E77B936-8910-41D5-98F1-4ECBCC97D684}.Debug|x86.Build.0 = Debug|Win32
-		{5E77B936-8910-41D5-98F1-4ECBCC97D684}.Release|x64.ActiveCfg = Release|x64
-		{5E77B936-8910-41D5-98F1-4ECBCC97D684}.Release|x64.Build.0 = Release|x64
-		{5E77B936-8910-41D5-98F1-4ECBCC97D684}.Release|x86.ActiveCfg = Release|Win32
-		{5E77B936-8910-41D5-98F1-4ECBCC97D684}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

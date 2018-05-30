@@ -67,7 +67,7 @@ STATION linear_select(STATION(&a)[NSIZE], unsigned l, unsigned r, unsigned k)
 		linear_select(a, l, l + (r - l) / length, l + (r - l) / length / 2);
 		std::swap(a[l], a[l + (r - l) / length / 2]);
 		unsigned m = plain_partiton(a, l, r);
-#ifdef THREEPARTITION
+#ifdef THREEPARTITION	// 一分为三
 		if (m == k)
 			return a[m];
 		else if (m > k)
