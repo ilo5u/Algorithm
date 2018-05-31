@@ -37,8 +37,8 @@ int main(int argc, char* argv[])
 
 		printf_s("The max value is: %d\n", [&res, &item, &item_cnt, &item_capacity] {
 			for (int i = 1; i <= item_cnt; ++i)
-				for (int j = item[i].weight; j <= item_capacity; ++j)
-					if (res[i - 1][j - item[i].weight] + item[i].value >= res[i - 1][j])
+				for (int j = 1; j <= item_capacity; ++j)
+					if (j >= item[i].weight && res[i - 1][j - item[i].weight] + item[i].value >= res[i - 1][j])
 						res[i][j] = res[i - 1][j - item[i].weight] + item[i].value;
 					else
 						res[i][j] = res[i - 1][j];
@@ -62,7 +62,7 @@ int main(int argc, char* argv[])
 	test(50);
 
 	printf_s("Test 2:\n");
-	test(100);
+	test(99);
 
 	return 0;
 }
