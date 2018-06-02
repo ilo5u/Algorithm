@@ -52,11 +52,14 @@ int main(int argc, char* argv[])
 		[&res, &item, &item_cnt, &item_capacity] {
 			int cur_item_id = item_cnt;
 			int cur_backpack_wgt = item_capacity;
+			int total_weight = 0;
 			while (cur_item_id > 0)
 				if (res[cur_item_id][cur_backpack_wgt] == res[cur_item_id - 1][cur_backpack_wgt])
 					--cur_item_id;
 				else
-					cur_backpack_wgt -= item[cur_item_id].weight, printf_s("id: %d is chosen.\n", cur_item_id--);
+					cur_backpack_wgt 
+						-= item[cur_item_id].weight, printf_s("id: %d is chosen.\n", cur_item_id), total_weight += item[cur_item_id--].weight;
+			printf_s("And the total weight is: %d\n", total_weight);
 		}();
 	};
 
