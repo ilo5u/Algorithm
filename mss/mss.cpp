@@ -8,11 +8,12 @@ int main(int argc, char* argv[])
 {
 	FILE* lpRead = nullptr;
 	int nItem[MAX_CAPACITY];
-	auto test = [&lpRead, &nItem](char szFileName[]) {
+	auto test = [&lpRead, &nItem](const char szFileName[]) {
 		fopen_s(&lpRead, szFileName, "r");
 
 		int iCnt = 0;
 		while (fscanf_s(lpRead, "%d\n", &nItem[iCnt++]) != EOF);
+		fclose(lpRead);
 
 		int res = 0;
 		int sum = 0;
@@ -33,12 +34,9 @@ int main(int argc, char* argv[])
 		return res;
 	};
 
-	char szFileName[MAX_LOADSTRING];
-	sprintf_s(szFileName, "附件2.最大子段和输入数据2017-序列1.txt");
-	printf_s("test1: sum = %d\n", test(szFileName));
-
-	sprintf_s(szFileName, "附件2.最大子段和输入数据2017-序列2.txt");
-	printf_s("test2: sum = %d\n", test(szFileName));
+	printf_s("test1: sum = %d\n", test("附件2.最大子段和输入数据2017-序列1.txt"));
+	printf_s("\n");
+	printf_s("test2: sum = %d\n", test("附件2.最大子段和输入数据2017-序列2.txt"));
 
 	return 0;
 }

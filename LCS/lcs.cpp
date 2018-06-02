@@ -7,8 +7,8 @@
 
 typedef struct _STR_SET
 {
-	char m_szId[MAX_ITEM_NUM][MAX_LOADSTRING];
-	char m_szSet[MAX_ITEM_NUM][MAX_LOADSTRING];
+	char m_szId[MAX_ITEM_NUM][MAX_LOADSTRING];  // 占位字符串
+	char m_szSet[MAX_ITEM_NUM][MAX_LOADSTRING]; // 匹配串记录
 } STRSET, *LPSTRSET;
 
 int main(int argc, char* argv[])
@@ -27,30 +27,34 @@ int main(int argc, char* argv[])
 			strcat_s(strset.m_szSet[i] + strlen(strset.m_szSet[i]), MAX_LOADSTRING - strlen(strset.m_szSet[i]), szMore);
 		}
 	}
+	fclose(lpRead);
 
-	int res[MAX_LOADSTRING][MAX_LOADSTRING];
-	std::stack<char> path;
-	auto test = [&res, &path, &strset](int a, int b) {
+	int res[MAX_LOADSTRING][MAX_LOADSTRING]; // DP记录数组
+	auto test = [&res, &strset](int a, int b) {
 		int lena = static_cast<int>(strlen(strset.m_szSet[a]));
 		int lenb = static_cast<int>(strlen(strset.m_szSet[b]));
 
-		for (int i = 0; i < lena; ++i)
-			for (int j = 0; j < lenb; ++j)
-				if (!i || !j)
-					res[i][j] = 0;
-				else
-				{
-					res[i][j] = std::max(res[i][j - 1], res[i - 1][j]);
-					if (strset.m_szSet[a][i] == strset.m_szSet[b][j])
-						res[i][j] = std::max(res[i - 1][j - 1] + 1, res[i][j]);
-				}
+		for (int i = 0; i <= lena; ++i)
+			res[i][0] = 0;
+		for (int i = 0; i <= lenb; ++i)
+			res[0][i] = 0;
 
-		int cur_a = lena - 1;
-		int cur_b = lenb - 1;
-		while (cur_a && cur_b)
-			if (strset.m_szSet[a][cur_a] == strset.m_szSet[b][cur_b])
+		for (int i = 1; i <= lena; ++i)
+			for (int j = 1; j <= lenb; ++j)
 			{
-				path.push(strset.m_szSet[a][cur_a]);
+				res[i][j] = std::max(res[i][j - 1], res[i - 1][j]);
+				if (strset.m_szSet[a][i - 1] == strset.m_szSet[b][j - 1])
+					res[i][j] = res[i - 1][j - 1] + 1;
+			}
+
+		// 搜索路径
+		int cur_a = lena;
+		int cur_b = lenb;	
+		std::stack<char> path; // 栈保存路径
+		while (cur_a && cur_b)
+			if (strset.m_szSet[a][cur_a - 1] == strset.m_szSet[b][cur_b - 1])
+			{
+				path.push(strset.m_szSet[a][cur_a - 1]);
 				--cur_a, --cur_b;
 			}
 			else
@@ -67,13 +71,13 @@ int main(int argc, char* argv[])
 		}
 		printf_s("\n");
 
-		return res[lena - 1][lenb - 1];
+		return res[lena][lenb];
 	};
 
-	printf_s("test1: A and B = %d\n", test(0, 1));
-	printf_s("test2: C and D = %d\n", test(2, 3));
-	printf_s("test3: A and D = %d\n", test(0, 3));
-	printf_s("test4: B and C = %d\n", test(1, 2));
+	printf_s("test1: A and B = %d\n\n", test(0, 1)); // A and B
+	printf_s("test2: C and D = %d\n\n", test(2, 3)); // C and D
+	printf_s("test3: A and D = %d\n\n", test(0, 3)); // A and D
+	printf_s("test4: B and C = %d\n", test(1, 2)); // B and C
 
 	return 0;
 }
