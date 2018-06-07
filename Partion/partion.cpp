@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
 		return get_distance(a, b) + get_distance(b, c) + get_distance(a, c);
 	}; // 获取a, b, c三个基站构成的三角形的周长
 
-	auto test = [&station_set, get_wgt](const char szOpenFileName[]) {
+	auto test = [&station_set, get_wgt, get_distance](const char szOpenFileName[]) {
 		FILE *lpRead = nullptr;
 		fopen_s(&lpRead, szOpenFileName, "r");
 
@@ -66,6 +66,13 @@ int main(int argc, char* argv[])
 			&station_set[station_cnt].id, &station_set[station_cnt].lng, &station_set[station_cnt].lat, &station_set[station_cnt].num) != EOF)
 			++station_cnt;
 		fclose(lpRead);
+
+		double dist[MAX_NUM][MAX_NUM];
+		for (int i = 0; i < station_cnt; ++i)
+			for (int j = 0; j < station_cnt; ++j)
+				dist[i][j] = get_distance(i, j);
+		for (int i = 0; i < station_cnt; ++i)
+			printf_s("(%d, %d) : %lf\n", i, (i + 1) % station_cnt, dist[i][(i + 1) % station_cnt]);
 
 		double wgt[MAX_NUM][MAX_NUM];
 		int    connect[MAX_NUM][MAX_NUM];
