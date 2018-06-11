@@ -19,18 +19,27 @@ node_ptr build_huffman_tree(const std::map<char, int>& rec)
 	std::vector<node_ptr> huffman_forest_heap;
 	for (std::map<char, int>::const_iterator it = rec.begin(); it != rec.end(); ++it)
 		huffman_forest_heap.push_back(new node{ *it, nullptr, nullptr });
-	for (size_t pos = 0; pos < huffman_forest_heap.size() - 1; ++pos)
+	std::make_heap(huffman_forest_heap.begin(), huffman_forest_heap.end(), [](const node_ptr& lpLeft, const node_ptr& lpRight) {
+		return lpLeft->rec.second > lpRight->rec.second;
+	});
+
+	for (std::vector<node_ptr>::iterator it_end = huffman_forest_heap.end(); it_end != huffman_forest_heap.begin() + 1;)
 	{
-		std::make_heap(huffman_forest_heap.begin() + pos, huffman_forest_heap.end(), [](const node_ptr& lpLeft, const node_ptr& lpRight) {
+		std::pop_heap(huffman_forest_heap.begin(), it_end, [](const node_ptr& lpLeft, const node_ptr& lpRight) {
+			return lpLeft->rec.second > lpRight->rec.second;
+		});
+		std::pop_heap(huffman_forest_heap.begin(), --it_end, [](const node_ptr& lpLeft, const node_ptr& lpRight) {
 			return lpLeft->rec.second > lpRight->rec.second;
 		});
 
-		huffman_forest_heap[pos + 1] =
-			new node{ std::pair<char, int>{ 0x0, huffman_forest_heap[pos]->rec.second + huffman_forest_heap[pos + 1]->rec.second },
-				huffman_forest_heap[pos], huffman_forest_heap[pos + 1] };
+		*(it_end - 1) = new node{ std::pair<char, int>{ 0x0, (*(it_end - 1))->rec.second + (*it_end)->rec.second },
+			*(it_end - 1), *it_end };
+		std::push_heap(huffman_forest_heap.begin(), it_end, [](const node_ptr& lpLeft, const node_ptr& lpRight) {
+			return lpLeft->rec.second > lpRight->rec.second;
+		});
 	}
 	
-	return huffman_forest_heap.back();
+	return huffman_forest_heap.front();
 }
 
 typedef struct _Encode
@@ -40,6 +49,9 @@ typedef struct _Encode
 
 void get_huffman_code(const node_ptr& lpNode, encode_ptr lpEncode, std::string encode = std::string{ })
 {
+	for (size_t i = 0; i < encode.size(); ++i)
+		printf_s("-");
+	printf_s("%d %c\n", lpNode->rec.second, lpNode->rec.first);
 	if (!lpNode->lpLeft && !lpNode->lpRight)
 		lpEncode->encode_map.insert({ lpNode->rec.first, encode });
 	if (lpNode->lpLeft)
@@ -61,15 +73,25 @@ int main(int argc, char* argv[])
 		while (fscanf_s(lpRead, "%s", szLineText, MAX_LOADSTRING) != EOF)
 			strcat_s(szText, szLineText);
 		
+		int total = 0;
 		for (size_t pos = 0; pos < strlen(szText); ++pos)
-			if (szText[pos] > 0 && (isalpha(szText[pos]) || szText[pos] == '#'))
-				++rec[szText[pos]];
+			if (szText[pos] > 0 && (islower(szText[pos]) || szText[pos] == '#'))
+				++rec[szText[pos]], ++total;
+
+		printf_s("Charactors(a-zA-Z#) in total : %d\n", total);
+		for (std::map<char, int>::const_iterator it = rec.begin(); it != rec.end(); ++it)
+			printf_s("%c: %d\t%.2lf%%\n", it->first, it->second, (double)it->second / (double)total * 100.0);
+
+		printf_s("\nFixed-length encoding needs %d bits in total, with %d bits per charactor.\n", total * 5, 5);
 
 		node_ptr huffman_head_ptr = build_huffman_tree(rec);
-
-		encode huffman_code;
+		encode   huffman_code;
 		get_huffman_code(huffman_head_ptr, &huffman_code);
-
+		
+		int bits = 0;
+		for (std::map<char, std::string>::const_iterator it = huffman_code.encode_map.begin(); it != huffman_code.encode_map.end(); ++it)
+			bits += (int)it->second.size() * rec[it->first];
+		printf_s("\nWhile huffman encoding needs %d bits in total, with the following encoding table.\n", bits);
 		for (std::map<char, std::string>::const_iterator it = huffman_code.encode_map.begin(); it != huffman_code.encode_map.end(); ++it)
 			printf_s("%c: %s\n", it->first, it->second.c_str());
 
