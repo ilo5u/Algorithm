@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <map>
 
-#define MAX_NUM 30
+#define MAX_NUM 50
 
 // #define KRUSKAL
 
@@ -38,11 +38,10 @@ int main(int argc, char* argv[])
 {
 	station station[MAX_NUM];
 	double dbDist[MAX_NUM][MAX_NUM];
-	auto test = [&](const char szOpenFileName[]) {
+	auto test = [&](const char szOpenFileName[], int station_cnt) {
 		FILE* lpRead = nullptr;
-		fopen_s(&lpRead, "附件1-1.基站图的邻接矩阵-v1.txt", "r");
+		fopen_s(&lpRead, szOpenFileName, "r");
 
-		int station_cnt = 22;
 		for (int i = 1; i <= station_cnt; ++i)
 			fscanf_s(lpRead, "%d", &station[i].seq);
 		for (int i = 1; i <= station_cnt; ++i)
@@ -134,10 +133,14 @@ int main(int argc, char* argv[])
 			printf_s("(%2d, %2d) : %lf\n", it->u, it->v, it->dist);
 			total += it->dist;
 		}
-		printf_s("The total weight is %lf.", total);
+		printf_s("The total weight is %lf.\n", total);
 
 		fclose(lpRead);
 	};
-	test("附件1-1.基站图的邻接矩阵-v1.txt");
+	printf_s("test1 : 42 stations\n");
+	test("附件1-1.基站图的邻接矩阵-v1.txt", 42);
+
+	printf_s("\ntest2 : 22 stations\n");
+	test("附件1-1.基站图的邻接矩阵-v2.txt", 22);
 	return 0;
 }
