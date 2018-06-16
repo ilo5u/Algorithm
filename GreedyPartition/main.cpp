@@ -17,6 +17,7 @@ typedef struct _Station
 	int    num;
 } station;
 
+// 选取当前最优剖分线段
 void partition(const std::vector<int>& node_vec, double dist[][MAX_NUM], std::vector<std::pair<int, int>>& connect_vec)
 {
 	int size = (int)node_vec.size();
@@ -85,6 +86,7 @@ int main(int argc, char* argv[])
 			&station_info[station_cnt].id, &station_info[station_cnt].lng, &station_info[station_cnt].lat, &station_info[station_cnt].num) != EOF)
 			++station_cnt;
 
+		// 邻接矩阵
 		double dist[MAX_NUM][MAX_NUM];
 		for (int i = 0; i < station_cnt; ++i)
 			for (int j = 0; j < station_cnt; ++j)

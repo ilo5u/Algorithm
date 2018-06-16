@@ -14,9 +14,10 @@ typedef struct _Node
 	_Node* lpRight;
 } node, *node_ptr;
 
+// 构建哈夫曼树
 node_ptr build_huffman_tree(const std::map<char, int>& rec)
 {
-	std::vector<node_ptr> huffman_forest_heap;
+	std::vector<node_ptr> huffman_forest_heap; // 小顶堆每个元素为森林
 	for (std::map<char, int>::const_iterator it = rec.begin(); it != rec.end(); ++it)
 		huffman_forest_heap.push_back(new node{ *it, nullptr, nullptr });
 	std::make_heap(huffman_forest_heap.begin(), huffman_forest_heap.end(), [](const node_ptr& lpLeft, const node_ptr& lpRight) {
@@ -24,7 +25,7 @@ node_ptr build_huffman_tree(const std::map<char, int>& rec)
 	});
 
 	for (std::vector<node_ptr>::iterator it_end = huffman_forest_heap.end(); it_end != huffman_forest_heap.begin() + 1;)
-	{
+	{ // 直到堆中只剩下一个森林
 		std::pop_heap(huffman_forest_heap.begin(), it_end, [](const node_ptr& lpLeft, const node_ptr& lpRight) {
 			return lpLeft->rec.second > lpRight->rec.second;
 		});
@@ -32,6 +33,7 @@ node_ptr build_huffman_tree(const std::map<char, int>& rec)
 			return lpLeft->rec.second > lpRight->rec.second;
 		});
 
+		// 合并森林
 		*(it_end - 1) = new node{ std::pair<char, int>{ 0x0, (*(it_end - 1))->rec.second + (*it_end)->rec.second },
 			*(it_end - 1), *it_end };
 		std::push_heap(huffman_forest_heap.begin(), it_end, [](const node_ptr& lpLeft, const node_ptr& lpRight) {
@@ -47,6 +49,7 @@ typedef struct _Encode
 	std::map<char, std::string> encode_map;
 } encode, *encode_ptr;
 
+// 递归编码
 void get_huffman_code(const node_ptr& lpNode, encode_ptr lpEncode, std::string encode = std::string{ })
 {
 	for (size_t i = 0; i < encode.size(); ++i)
@@ -73,12 +76,13 @@ int main(int argc, char* argv[])
 		while (fscanf_s(lpRead, "%s", szLineText, MAX_LOADSTRING) != EOF)
 			strcat_s(szText, szLineText);
 		
+		// 统计a-z#
 		int total = 0;
 		for (size_t pos = 0; pos < strlen(szText); ++pos)
 			if (szText[pos] > 0 && (islower(szText[pos]) || szText[pos] == '#'))
 				++rec[szText[pos]], ++total;
 
-		printf_s("Charactors(a-zA-Z#) in total : %d\n", total);
+		printf_s("Charactors(a-z#) in total : %d\n", total);
 		for (std::map<char, int>::const_iterator it = rec.begin(); it != rec.end(); ++it)
 			printf_s("%c: %d\t%.2lf%%\n", it->first, it->second, (double)it->second / (double)total * 100.0);
 

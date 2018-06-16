@@ -6,8 +6,9 @@
 
 #define MAX_NUM 50
 
-// #define KRUSKAL
+// #define KRUSKAL // 采用KRUSKAL算法 否则采用PRIM算法
 
+// 边信息
 typedef struct _Elist
 {
 	int u;
@@ -21,6 +22,7 @@ typedef struct _Station
 	int id;
 } station, *station_ptr;
 
+// KRUSKAL并查集操作
 #ifdef KRUSKAL
 int get_father(int k, int(&father)[MAX_NUM]) {
 	return father[k] == k ? k : father[k] = get_father(father[k], father);
@@ -51,7 +53,7 @@ int main(int argc, char* argv[])
 #ifdef KRUSKAL
 		std::vector<elist> e_vec;
 #else
-		std::vector<elist> e_heap;
+		std::vector<elist> e_heap; // PRIM算法用堆搜索最近点
 #endif // KRUSKAL
 
 		for (int i = 1; i <= station_cnt; ++i)
@@ -68,7 +70,7 @@ int main(int argc, char* argv[])
 			}
 		}
 
-		std::vector<elist> e_minitree;
+		std::vector<elist> e_minitree; // 生成树边记录
 #ifdef KRUSKAL
 		std::sort(e_vec.begin(), e_vec.end(), [](const elist& l, const elist& r) {
 			return l.dist < r.dist;
@@ -79,13 +81,11 @@ int main(int argc, char* argv[])
 			father[i] = i;
 
 		for (std::vector<elist>::const_iterator it = e_vec.begin(); it != e_vec.end() && e_minitree.size() < station_cnt - 1; ++it)
-		{
 			if (get_father(it->u, father) != get_father(it->v, father))
 			{
 				union_node(it->u, it->v, father);
 				e_minitree.push_back({ it->u, it->v, it->dist });
 			}
-		}
 #else
 		bool b_visit[MAX_NUM];
 		for (auto& elem : b_visit)

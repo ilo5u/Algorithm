@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
 		for (int i = 1; i <= station_cnt; ++i)
 			bVisit[i] = false;
 
-		int iPath[MAX_NUM];
+		int iPath[MAX_NUM]; // Â·¾¶¼ÇÂ¼
 		for (int i = 1; i <= station_cnt; ++i)
 			iPath[i] = 0;
 
@@ -58,10 +58,11 @@ int main(int argc, char* argv[])
 
 			bVisit[v] = true;
 			for (int j = 1; j <= station_cnt; ++j)
-				if (!bVisit[j] && dbDist[v][j] > 0 && dbRes[v] + dbDist[v][j] < dbRes[j])
+				if (!bVisit[j] && dbDist[v][j] > 0 && dbRes[v] + dbDist[v][j] < dbRes[j]) // ÉìËõ
 					dbRes[j] = dbRes[v] + dbDist[v][j], iPath[j] = v;
 		}
 
+		// ËÑË÷Â·¾¶
 		for (int i = 1; i <= station_cnt; ++i)
 		{
 			printf_s("ID = %2d %d to %6d : %lf\t", i, sour, station[i].id, dbRes[i]);
@@ -71,9 +72,9 @@ int main(int argc, char* argv[])
 			while (iPath[cur] != 0)
 				path_stack.push(cur), cur = iPath[cur];
 
-			printf_s("Path = %d", id_to_seq[sour]);
+			printf_s("Path = (%d)%d", id_to_seq[sour], sour);
 			while (!path_stack.empty())
-				printf_s("->%d", path_stack.top()), path_stack.pop();
+				printf_s("->(%d)%d", path_stack.top(), station[path_stack.top()].id), path_stack.pop();
 			printf_s("\n");
 		}
 
